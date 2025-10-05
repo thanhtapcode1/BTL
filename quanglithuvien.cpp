@@ -35,6 +35,7 @@ NodeHD *queue::createNode(int x) {
 // lay phan tu dau nhung khong xoa
 int queue::front() {
     if (head != NULL) return head->data;
+    return -1;
 }
 // kiem tra rong
 bool queue::empty() { return head == NULL; }
@@ -71,6 +72,7 @@ void queue::inHD() {
     }
 }
 //==========================cau truc========================
+class listSach;
 struct docgia {
     string ten;
     string gioitinh;
@@ -105,7 +107,7 @@ class list {
     void insertFirst(docgia x);
     void insertMid(docgia x, int vitri);
     int soPhantu();
-    void xoaDocGiaTheoID(int id);
+    void xoaDocGiaTheoID(int id, listSach &ds);
     Node *timDocGiaTheoID(int id);
     void xemSachDangMuon(int id);
     bool tonTaiDocGia(int id);
@@ -166,6 +168,16 @@ void list::inDs() {
         cout << endl;
     }
 }
+Node *list::timDocGiaTheoID(int id) {
+    Node *p = head;
+    while (p != NULL) {
+        if (p->data.id == id) {
+            return p;
+        }
+        p = p->next;
+    }
+    return NULL;
+}
 void list::insertFirst(docgia x) {
     Node *p = createNode(x);
     if (head == NULL) {
@@ -194,38 +206,6 @@ void list::insertMid(docgia x, int vitri) {
     }
     p->next = tmp->next;
     tmp->next = p;
-}
-void list::xoaDocGiaTheoID(int id) {
-    if (head == NULL) {
-        cout << "Danh sach rong, khong the xoa.\n";
-        return;
-    } else if (head->data.id == id) {
-        Node *c = head;
-        head = head->next;
-        delete c;
-        cout << "Da xoa doc gia co ID " << id << ".\n";
-        return;
-    }
-    Node *p = head;
-    while (p->next != NULL && p->next->data.id != id) {
-        p = p->next;
-    }
-    if (p->next == NULL) {
-        cout << "Khong tim thay doc gia co ID " << id << ".\n";
-        return;
-    }
-    Node *c = p->next;
-    p->next = c->next;
-    delete c;
-    cout << "Da xoa doc gia co ID " << id << ".\n";
-}
-Node *list::timDocGiaTheoID(int id) {
-    Node *p = head;
-    while (p != NULL) {
-        if (p->data.id == id) return p;
-        p = p->next;
-    }
-    return NULL;
 }
 // xem sach doc gia dang muon
 void list::xemSachDangMuon(int id) {
@@ -481,6 +461,38 @@ void listSach::traSach(string ma, int id, list &dg) {
              << "so luong sach hien co: " << p->data.soluong;
     }
 }
+// xoa doc gia theo id và tra lai sach
+void list::xoaDocGiaTheoID(int id, listSach &ds) {
+    if (head == NULL) {
+        cout << "Danh sach rong, khong the xoa.\n";
+        return;
+    }
+    Node *truoc = NULL;
+    Node *sau = head;
+
+    while (sau != NULL && sau->data.id != id) {
+        truoc = sau;
+        sau = sau->next;
+    }
+    if (sau == NULL) {
+        cout << "Khong tim thay doc gia co ID " << id << ".\n";
+        return;
+    }
+    // copy lai danh sach sách da muon để khi duyệt vector ko bị xóa mất phầntửkhidangduyệt
+    auto temp = sau->data.sachdamuon;
+    for (const auto &maSach : temp) {
+        ds.traSach(maSach, id, *this);
+    }
+    sau->data.sachdamuon.clear();
+    // Xóa node độc giả
+    if (truoc == NULL)
+        head = head->next;
+    else
+        truoc->next = sau->next;
+    delete sau;
+
+    cout << "Da xoa doc gia co ID " << id << " va tra lai toan bo sach.\n";
+}
 //=======================nhap thong tin doc gia=================
 void nhapDocGia(docgia &a) {
     cout << "Nhap ID:";
@@ -597,7 +609,7 @@ int main() {
             int id;
             cout << "Nhap ID doc gia can xoa: ";
             cin >> id;
-            Dsdocgia.xoaDocGiaTheoID(id);
+            Dsdocgia.xoaDocGiaTheoID(id, DSsach);
         }
         if (lc == 3) {  // xoa sach theo ma
             string ma;
