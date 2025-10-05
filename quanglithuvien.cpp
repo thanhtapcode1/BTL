@@ -428,7 +428,7 @@ void listSach::xoasachbangten(string tenSach)
     NodeSach *c = p->next;
     p->next = c->next;
     delete c;
-    cout << "Da xoa doc gia ma ten " << tenSach << ".\n";
+    cout << "Da xoa sach co ten " << tenSach << ".\n";
 }
 
 //=======================nhap thong tin doc gia=================
