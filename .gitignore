@@ -1,0 +1,35 @@
+# ========================
+# 🧠 C++ Gitignore chuẩn
+# ========================
+
+# Bỏ qua file biên dịch (object / binary)
+*.o
+*.obj
+*.exe
+*.out
+*.dll
+*.so
+*.a
+*.lib
+
+# Bỏ qua file log / temp
+*.log
+*.tmp
+
+# Bỏ qua thư mục build hoặc dist
+/build/
+/bin/
+/dist/
+/Debug/
+/Release/
+
+# Bỏ qua VS Code cài đặt riêng
+.vscode/
+
+# Bỏ qua file hệ thống Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Bỏ qua file tạm của Mac (nếu dùng chung máy)
+.DS_Store
