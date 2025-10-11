@@ -268,6 +268,7 @@ class listSach {
     void muonSach(string ma, int id, list &dg);
     void traSach(string ma, int id, list &dg);
     bool tonTaiSach(string &ma);
+    bool tonTaiSachTheoTen(string ten);
 };
 listSach::listSach() {
     head = NULL;
@@ -367,7 +368,7 @@ void listSach::xoasachbangma(string masach) {
     NodeSach *c = p->next;
     p->next = c->next;
     delete c;
-    cout << "Da xoa doc gia ma sach " << masach << ".\n";
+    cout << "Da xoa ma sach " << masach << ".\n";
 }
 void listSach::xoasachbangten(string tenSach) {
     if (head == NULL) {
@@ -401,10 +402,18 @@ NodeSach *listSach::timSachTheoMa(string ma) {
     }
     return NULL;
 }
-bool listSach::tonTaiSach(string &ma) {
+bool listSach::tonTaiSach(string &ma) {  // ton tai sach theo ma
     NodeSach *p = head;
     while (p != NULL) {
         if (p->data.masach == ma) return true;
+        p = p->next;
+    }
+    return false;
+}
+bool listSach::tonTaiSachTheoTen(string ten) {
+    NodeSach *p = head;
+    while (p != NULL) {
+        if (p->data.tenSach == ten) return true;
         p = p->next;
     }
     return false;
@@ -447,9 +456,10 @@ void listSach::traSach(string ma, int id, list &dg) {
             }
         }
     }
-    if (!p->data.hangdoimuonsach.empty()) {                // kiem tra neu co doc gia trong hang doi
-        int idTiepTheo = p->data.hangdoimuonsach.front();  // lay ra doc gia đợi đầu tiên
-        p->data.hangdoimuonsach.dequeue();                 // xoa khoi hang doi
+    if (!p->data.hangdoimuonsach.empty()) {  // kiem tra neu co doc gia trong hang doi
+        int idTiepTheo =
+            p->data.hangdoimuonsach.front();  // lay ra doc gia đợi đầu tiên gan vao idTiepTheo
+        p->data.hangdoimuonsach.dequeue();    // xoa khoi hang doi
         Node *dg2 = dg.timDocGiaTheoID(idTiepTheo);
         if (dg2) {
             dg2->data.sachdamuon.push_back(ma);  // them sach da muon vao doc gia co IdTieptheo
@@ -524,20 +534,17 @@ int main() {
     listSach DSsach;
     while (true) {
         cout << "\n\n===================MENU====================\n";
-        cout << "|     0. Thoat khoi chuong trinh          |\n";
-        cout << "|     1. Them doc gia                     |\n";
-        cout << "|     2. Them sach                        |\n";
-        cout << "|     3. Xoa sach theo ma                 |\n";
-        cout << "|     4. Xoa doc gia theo id              |\n";
-        cout << "|     5. Xoa sach theo ten                |\n";
-        cout << "|     6. Tim sach theo ma                 |\n";
-        cout << "|     7. Muon sach                        |\n";
-        cout << "|     8. Tra sach                         |\n";
-        cout << "|     9. In danh sach doc gia             |\n";
-        cout << "|     10. In danh sach Sach               |\n";
-        cout << "|     11. In sach Doc gia da muon         |\n";
+        cout << "|     0. Thoat khoi chuong trinh.         |\n";
+        cout << "|     1. Them du lieu. (  sach / doc gia )|\n";
+        cout << "|     2. Xoa sach ( ma / ten ).           |\n";
+        cout << "|     3. Xoa doc gia theo ID.             |\n";
+        cout << "|     4. Tim sach theo ma.                |\n";
+        cout << "|     5. Muon/tra sach.                   |\n";
+        cout << "|     6. In danh sach doc gia.            |\n";
+        cout << "|     7. In danh sach Sach.               |\n";
+        cout << "|     8. In sach Doc gia da muon.         |\n";
         cout << "===========================================\n\n";
-        cout << "-moi nhap lua chon :";
+        cout << "[[?]] Moi nhap lua chon :";
         int lc;
         cin >> lc;
         if (lc == 0) {
@@ -545,48 +552,57 @@ int main() {
             break;
         }
         if (lc == 1) {
-            cout << "1. them vao dau danh sach\n";
-            cout << "2. them vao cuoi danh sach\n";
-            cout << "3. them vao giua danh sach\n";
-            cout << "-moi nhap lua chon :";
+            cout << " 1.Them Doc Gia.\n";
+            cout << " 2.Them Sach.\n";
+            cout << "[?] Moi nhap lua chon :";
             int lc1;
             cin >> lc1;
-            docgia dg;
-            nhapDocGia(dg);
             if (lc1 == 1) {
-                Dsdocgia.insertFirst(dg);
-            } else if (lc1 == 2) {
-                Dsdocgia.insertLast(dg);
-            } else if (lc1 == 3) {
-                int vitri;
-                cout << "Nhap vi tri can chen :";
-                cin >> vitri;
-                Dsdocgia.insertMid(dg, vitri);
+                cout << "---------------------------------------------\n";
+                cout << " 1.Them vao dau danh sach\n";
+                cout << " 2.Them vao cuoi danh sach\n";
+                cout << " 3.Them vao giua danh sach\n";
+                cout << "[?] Moi nhap lua chon :";
+                int lc1;
+                cin >> lc1;
+                docgia dg;
+                nhapDocGia(dg);
+                if (lc1 == 1) {
+                    Dsdocgia.insertFirst(dg);
+                } else if (lc1 == 2) {
+                    Dsdocgia.insertLast(dg);
+                } else if (lc1 == 3) {
+                    int vitri;
+                    cout << "Nhap vi tri can chen :";
+                    cin >> vitri;
+                    Dsdocgia.insertMid(dg, vitri);
+                }
+                cout << "Them doc gia thanh cong.";
             }
-            cout << "Them doc gia thanh cong.";
-        }
-        if (lc == 2) {
-            cout << "1. them vao dau danh sach\n";
-            cout << "2. them vao cuoi danh sach\n";
-            cout << "3. them vao giua danh sach\n";
-            cout << "-moi nhap lua chon :";
-            int lc1;
-            cin >> lc1;
-            sach a;
-            nhapSach(a);
-            if (lc1 == 1) {
-                DSsach.insertFirst(a);
-            } else if (lc1 == 2) {
-                DSsach.insertLast(a);
-            } else if (lc1 == 3) {
-                int vitri;
-                cout << "Nhap vi tri can chen :";
-                cin >> vitri;
-                DSsach.insertMid(a, vitri);
+            if (lc1 == 2) {
+                cout << "---------------------------------------------\n";
+                cout << " 1.Them vao dau danh sach\n";
+                cout << " 2.Them vao cuoi danh sach\n";
+                cout << " 3.Them vao giua danh sach\n";
+                cout << "[?] Moi nhap lua chon :";
+                int lc1;
+                cin >> lc1;
+                sach a;
+                nhapSach(a);
+                if (lc1 == 1) {
+                    DSsach.insertFirst(a);
+                } else if (lc1 == 2) {
+                    DSsach.insertLast(a);
+                } else if (lc1 == 3) {
+                    int vitri;
+                    cout << "Nhap vi tri can chen :";
+                    cin >> vitri;
+                    DSsach.insertMid(a, vitri);
+                }
+                cout << "Them sach thanh cong.";
             }
-            cout << "Them sach thanh cong.";
         }
-        if (lc == 6) {  // tim sach theo ma
+        if (lc == 4) {  // tim sach theo ma
             string ma;
             cout << "Nhap ma sach can tim: ";
             cin.ignore();
@@ -599,65 +615,89 @@ int main() {
                 cout << "Khong tim thay sach.\n";
             }
         }
-        if (lc == 10) {  // in ds sach
+        if (lc == 7) {  // in ds sach
             DSsach.inDs();
         }
-        if (lc == 9) {  // in ds docgia
+        if (lc == 6) {  // in ds docgia
             Dsdocgia.inDs();
         }
-        if (lc == 4) {  // xoa doc gia theo id
+        if (lc == 3) {  // xoa doc gia theo id
             int id;
             cout << "Nhap ID doc gia can xoa: ";
             cin >> id;
             Dsdocgia.xoaDocGiaTheoID(id, DSsach);
         }
-        if (lc == 3) {  // xoa sach theo ma
-            string ma;
-            cout << "Nhap ma sach can xoa: ";
-            cin.ignore();
-            getline(cin, ma);
-            DSsach.xoasachbangma(ma);
+        if (lc == 2) {
+            int lc3;
+            cout << " 1. Xoa theo ma.\n";
+            cout << " 2. Xoa theo ten.\n";
+            cout << "[?] Moi nhap lua chon :";
+            cin >> lc3;
+            if (lc3 == 1) {  // xoa sach theo ma
+                string ma;
+                cout << "Nhap ma sach can xoa: ";
+                cin.ignore();
+                getline(cin, ma);
+                if (!DSsach.tonTaiSach(ma)) {
+                    cout << "Khong ton tai sach co ma \"" << ma << "\"\n";
+                } else {
+                    DSsach.xoasachbangma(ma);
+                }
+            }
+            if (lc3 == 2) {
+                string ten;
+                cout << "Nhap ten sach can xoa: ";
+                cin.ignore();
+                getline(cin, ten);
+                if (!DSsach.tonTaiSachTheoTen(ten)) {
+                    cout << "Khong ton tai sach co ten \"" << ten << "\"\n";
+                } else {
+                    DSsach.xoasachbangten(ten);
+                }
+            }
         }
         if (lc == 5) {
-            string ten;
-            cout << "Nhap ten sach can xoa: ";
-            cin.ignore();
-            getline(cin, ten);
-            DSsach.xoasachbangten(ten);
-        }
-        if (lc == 7) {  // muon sach
-            string ma;
-            int id;
-            cout << "Nhap ma sach: ";
-            cin.ignore();
-            getline(cin, ma);
-            cout << "Nhap id doc gia: ";
-            cin >> id;
-            if (!Dsdocgia.tonTaiDocGia(id)) {
-                cout << "Khong ton tai doc gia co ID " << id << endl;
-            } else if (!DSsach.tonTaiSach(ma)) {
-                cout << "Khong ton tai sach co ma \"" << ma << "\"\n";
-            } else {
-                DSsach.muonSach(ma, id, Dsdocgia);
+            int lc2;
+            cout << " 1.Muon sach.\n";
+            cout << " 2.Tra sach.\n";
+            cout << "[?] Nhap lua chon : ";
+            cin >> lc2;
+            if (lc2 == 1) {  // muon sach
+                string ma;
+                int id;
+                cout << "Nhap ma sach: ";
+                cin.ignore();
+                getline(cin, ma);
+                if (!DSsach.tonTaiSach(ma)) {
+                    cout << "Khong ton tai sach co ma \"" << ma << "\"\n";
+                    continue;
+                }
+                cout << "Nhap id doc gia: ";
+                cin >> id;
+                if (!Dsdocgia.tonTaiDocGia(id)) {
+                    cout << "Khong ton tai doc gia co ID " << id << endl;
+                } else {
+                    DSsach.muonSach(ma, id, Dsdocgia);
+                }
+            }
+            if (lc == 2) {  // tra sach
+                string ma;
+                int id;
+                cout << "Nhap ma sach: ";
+                cin.ignore();
+                getline(cin, ma);
+                cout << "Nhap id doc gia: ";
+                cin >> id;
+                if (!Dsdocgia.tonTaiDocGia(id)) {
+                    cout << "Khong ton tai doc gia co ID " << id << endl;
+                } else if (!DSsach.tonTaiSach(ma)) {
+                    cout << "Khong ton tai sach co ma \"" << ma << "\"\n";
+                } else {
+                    DSsach.traSach(ma, id, Dsdocgia);
+                }
             }
         }
-        if (lc == 8) {  // tra sach
-            string ma;
-            int id;
-            cout << "Nhap ma sach: ";
-            cin.ignore();
-            getline(cin, ma);
-            cout << "Nhap id doc gia: ";
-            cin >> id;
-            if (!Dsdocgia.tonTaiDocGia(id)) {
-                cout << "Khong ton tai doc gia co ID " << id << endl;
-            } else if (!DSsach.tonTaiSach(ma)) {
-                cout << "Khong ton tai sach co ma \"" << ma << "\"\n";
-            } else {
-                DSsach.traSach(ma, id, Dsdocgia);
-            }
-        }
-        if (lc == 11) {
+        if (lc == 8) {
             Dsdocgia.inTatCaSachDaMuon();
         }
     }
