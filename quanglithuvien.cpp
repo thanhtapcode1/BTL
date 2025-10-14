@@ -457,16 +457,15 @@ void listSach::traSach(string ma, int id, list &dg) {
         }
     }
     if (!p->data.hangdoimuonsach.empty()) {  // kiem tra neu co doc gia trong hang doi
-        int idTiepTheo =
-            p->data.hangdoimuonsach.front();  // lay ra doc gia đợi đầu tiên gan vao idTiepTheo
-        p->data.hangdoimuonsach.dequeue();    // xoa khoi hang doi
+        int idTiepTheo = p->data.hangdoimuonsach.front();
+        p->data.hangdoimuonsach.dequeue();  // xoa khoi hang doi
         Node *dg2 = dg.timDocGiaTheoID(idTiepTheo);
         if (dg2) {
             dg2->data.sachdamuon.push_back(ma);  // them sach da muon vao doc gia co IdTieptheo
             cout << "Doc gia " << idTiepTheo << " da duoc muon sach (" << p->data.tenSach << ").\n";
         }
     } else {                // neu hang doi trong
-        p->data.soluong++;  // tang so luong sach khi tra
+        p->data.soluong++;  // tra lai so luon sach khi tra
         cout << "ID:" << id << " tra sach thanh cong ."
              << "so luong sach hien co: " << p->data.soluong;
     }
@@ -540,9 +539,7 @@ int main() {
         cout << "|     3. Xoa doc gia theo ID.             |\n";
         cout << "|     4. Tim sach theo ma.                |\n";
         cout << "|     5. Muon/tra sach.                   |\n";
-        cout << "|     6. In danh sach doc gia.            |\n";
-        cout << "|     7. In danh sach Sach.               |\n";
-        cout << "|     8. In sach Doc gia da muon.         |\n";
+        cout << "|     6. Hien thi du lieu.                |\n";
         cout << "===========================================\n\n";
         cout << "[[?]] Moi nhap lua chon :";
         int lc;
@@ -551,13 +548,13 @@ int main() {
             cout << "Da thoat chuong trinh \n";
             break;
         }
-        if (lc == 1) {
+        if (lc == 1) {  // them thong tin
             cout << " 1.Them Doc Gia.\n";
             cout << " 2.Them Sach.\n";
             cout << "[?] Moi nhap lua chon :";
             int lc1;
             cin >> lc1;
-            if (lc1 == 1) {
+            if (lc1 == 1) {  // them docgia
                 cout << "---------------------------------------------\n";
                 cout << " 1.Them vao dau danh sach\n";
                 cout << " 2.Them vao cuoi danh sach\n";
@@ -579,7 +576,7 @@ int main() {
                 }
                 cout << "Them doc gia thanh cong.";
             }
-            if (lc1 == 2) {
+            if (lc1 == 2) {  // them sach
                 cout << "---------------------------------------------\n";
                 cout << " 1.Them vao dau danh sach\n";
                 cout << " 2.Them vao cuoi danh sach\n";
@@ -602,32 +599,8 @@ int main() {
                 cout << "Them sach thanh cong.";
             }
         }
-        if (lc == 4) {  // tim sach theo ma
-            string ma;
-            cout << "Nhap ma sach can tim: ";
-            cin.ignore();
-            getline(cin, ma);
-            NodeSach *p = DSsach.timSachTheoMa(ma);
-            if (p != NULL) {
-                cout << "Tim thay sach: " << p->data.tenSach << " | Tac gia: " << p->data.tacGia
-                     << " | SL: " << p->data.soluong << endl;
-            } else {
-                cout << "Khong tim thay sach.\n";
-            }
-        }
-        if (lc == 7) {  // in ds sach
-            DSsach.inDs();
-        }
-        if (lc == 6) {  // in ds docgia
-            Dsdocgia.inDs();
-        }
-        if (lc == 3) {  // xoa doc gia theo id
-            int id;
-            cout << "Nhap ID doc gia can xoa: ";
-            cin >> id;
-            Dsdocgia.xoaDocGiaTheoID(id, DSsach);
-        }
-        if (lc == 2) {
+
+        if (lc == 2) {  // xoa sach
             int lc3;
             cout << " 1. Xoa theo ma.\n";
             cout << " 2. Xoa theo ten.\n";
@@ -644,7 +617,7 @@ int main() {
                     DSsach.xoasachbangma(ma);
                 }
             }
-            if (lc3 == 2) {
+            if (lc3 == 2) {  // xoa sach theo ten
                 string ten;
                 cout << "Nhap ten sach can xoa: ";
                 cin.ignore();
@@ -656,7 +629,26 @@ int main() {
                 }
             }
         }
-        if (lc == 5) {
+        if (lc == 3) {  // xoa doc gia theo id
+            int id;
+            cout << "Nhap ID doc gia can xoa: ";
+            cin >> id;
+            Dsdocgia.xoaDocGiaTheoID(id, DSsach);
+        }
+        if (lc == 4) {  // tim sach theo ma
+            string ma;
+            cout << "Nhap ma sach can tim: ";
+            cin.ignore();
+            getline(cin, ma);
+            NodeSach *p = DSsach.timSachTheoMa(ma);
+            if (p != NULL) {
+                cout << "Tim thay sach: " << p->data.tenSach << " | Tac gia: " << p->data.tacGia
+                     << " | SL: " << p->data.soluong << endl;
+            } else {
+                cout << "Khong tim thay sach.\n";
+            }
+        }
+        if (lc == 5) {  // tra/muon sach
             int lc2;
             cout << " 1.Muon sach.\n";
             cout << " 2.Tra sach.\n";
@@ -680,7 +672,7 @@ int main() {
                     DSsach.muonSach(ma, id, Dsdocgia);
                 }
             }
-            if (lc == 2) {  // tra sach
+            if (lc2 == 2) {  // tra sach
                 string ma;
                 int id;
                 cout << "Nhap ma sach: ";
@@ -697,8 +689,22 @@ int main() {
                 }
             }
         }
-        if (lc == 8) {
-            Dsdocgia.inTatCaSachDaMuon();
+        if (lc == 6) {  // hien thi du lieu
+            int lc4;
+            cout << " 1. Hien thi danh sach doc gia.\n";
+            cout << " 2. Hien thi danh sach sach.\n";
+            cout << " 3. Hien thi tat ca sach da muon.\n";
+            cout << "[?] Moi nhap lua chon :";
+            cin >> lc4;
+            if (lc4 == 1) {
+                Dsdocgia.inDs();
+            }
+            if (lc4 == 2) {
+                DSsach.inDs();
+            }
+            if (lc4 == 3) {
+                Dsdocgia.inTatCaSachDaMuon();
+            }
         }
     }
 }
