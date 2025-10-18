@@ -340,7 +340,7 @@ void list::inTatCaSachDaMuon(listSach& dsSach) {
                 muon = muon->next;
             }
         }
-        cout << "-----------------------------------------------------------\n";
+        cout << "---------------------------------------------\n";
         p = p->next;
     }
 }
@@ -640,53 +640,54 @@ int main() {
                 cout << " 2.Them vao cuoi danh sach\n";
                 cout << " 3.Them vao giua danh sach\n";
                 cout << "[?] Moi nhap lua chon :";
-                int lc1;
-                cin >> lc1;
+                int lcthem;
+                cin >> lcthem;
                 docgia dg;
                 nhapDocGia(dg);
-                if (lc1 == 1) {
+                if (lcthem == 1) {
                     Dsdocgia.insertFirst(dg);
-                } else if (lc1 == 2) {
+                } else if (lcthem == 2) {
                     Dsdocgia.insertLast(dg);
-                } else if (lc1 == 3) {
+                } else if (lcthem == 3) {
                     int vitri;
                     cout << "Nhap vi tri can chen :";
                     cin >> vitri;
                     Dsdocgia.insertMid(dg, vitri);
                 }
                 cout << "Them doc gia thanh cong.";
-            }
-            if (lc1 == 2) {  // them sach
+                cout << "\n---------------------------------------------\n";
+            } else if (lc1 == 2) {  // them sach
                 cout << "---------------------------------------------\n";
                 cout << " 1.Them vao dau danh sach\n";
                 cout << " 2.Them vao cuoi danh sach\n";
                 cout << " 3.Them vao giua danh sach\n";
                 cout << "[?] Moi nhap lua chon :";
-                int lc1;
-                cin >> lc1;
+                int lcThem;
+                cin >> lcThem;
                 sach a;
                 nhapSach(a);
-                if (lc1 == 1) {
+                if (lcThem == 1) {
                     DSsach.insertFirst(a);
-                } else if (lc1 == 2) {
+                } else if (lcThem == 2) {
                     DSsach.insertLast(a);
-                } else if (lc1 == 3) {
+                } else if (lcThem == 3) {
                     int vitri;
                     cout << "Nhap vi tri can chen :";
                     cin >> vitri;
                     DSsach.insertMid(a, vitri);
                 }
                 cout << "Them sach thanh cong.";
+                cout << "\n---------------------------------------------\n";
             }
         }
 
         if (lc == 2) {  // xoa sach
-            int lc3;
+            int lcXoa;
             cout << " 1. Xoa theo ma.\n";
             cout << " 2. Xoa theo ten.\n";
             cout << "[?] Moi nhap lua chon :";
-            cin >> lc3;
-            if (lc3 == 1) {  // xoa sach theo ma
+            cin >> lcXoa;
+            if (lcXoa == 1) {  // xoa sach theo ma
                 string ma;
                 cout << "Nhap ma sach can xoa: ";
                 cin.ignore();
@@ -696,8 +697,8 @@ int main() {
                 } else {
                     DSsach.xoasachbangma(ma);
                 }
-            }
-            if (lc3 == 2) {  // xoa sach theo ten
+                cout << "\n---------------------------------------------\n";
+            } else if (lcXoa == 2) {  // xoa sach theo ten
                 string ten;
                 cout << "Nhap ten sach can xoa: ";
                 cin.ignore();
@@ -707,6 +708,7 @@ int main() {
                 } else {
                     DSsach.xoasachbangten(ten);
                 }
+                cout << "\n---------------------------------------------\n";
             }
         }
         if (lc == 3) {  // xoa doc gia theo id
@@ -714,6 +716,7 @@ int main() {
             cout << "Nhap ID doc gia can xoa: ";
             cin >> id;
             Dsdocgia.xoaDocGiaTheoID(id, DSsach);
+            cout << "\n---------------------------------------------\n";
         }
         if (lc == 4) {  // tim sach theo ma
             string ma;
@@ -725,8 +728,9 @@ int main() {
                 cout << "Tim thay sach: " << p->data.tenSach << " | Tac gia: " << p->data.tacGia
                      << " | SL: " << p->data.soluong << endl;
             } else {
-                cout << "Khong tim thay sach.\n";
+                cout << "Khong tim thay sach.";
             }
+            cout << "\n---------------------------------------------\n";
         }
         if (lc == 5) {  // tra/muon sach
             int lc2;
@@ -751,8 +755,8 @@ int main() {
                 } else {
                     DSsach.muonSach(ma, id, Dsdocgia);
                 }
-            }
-            if (lc2 == 2) {  // tra sach
+                cout << "\n---------------------------------------------\n";
+            } else if (lc2 == 2) {  // tra sach
                 string ma;
                 int id;
                 cout << "Nhap ma sach: ";
@@ -767,6 +771,7 @@ int main() {
                 } else {
                     DSsach.traSach(ma, id, Dsdocgia);
                 }
+                cout << "\n---------------------------------------------\n";
             }
         }
         if (lc == 6) {  // hien thi du lieu
@@ -778,13 +783,12 @@ int main() {
             cin >> lc4;
             if (lc4 == 1) {
                 Dsdocgia.inDs();
-            }
-            if (lc4 == 2) {
+            } else if (lc4 == 2) {
                 DSsach.inDs();
-            }
-            if (lc4 == 3) {
+            } else if (lc4 == 3) {
                 Dsdocgia.inTatCaSachDaMuon(DSsach);
             }
+            cout << "\n---------------------------------------------\n";
         }
     }
 }
