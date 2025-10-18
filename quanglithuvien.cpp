@@ -523,7 +523,12 @@ void listSach::traSach(string ma, int id, list& dg) {
     // xoa sach khoi danh sach muon
     NodeDg* a = dg.timDocGiaTheoID(id);
     if (a) {  // neu ton tai doc gia
-        a->data.sachdamuon.xoaSach(ma);
+        if (a->data.sachdamuon.isEmpty()) {
+            cout << "Danh sach rong";
+            return;
+        } else {
+            a->data.sachdamuon.xoaSach(ma);
+        }
     }
     if (!p->data.hangdoimuonsach.empty()) {  // kiem tra neu co doc gia trong hang doi
         int idTiepTheo = p->data.hangdoimuonsach.front();
@@ -533,10 +538,10 @@ void listSach::traSach(string ma, int id, list& dg) {
             dg2->data.sachdamuon.themSach(ma);  // them sach da muon vao doc gia co IdTieptheo
             cout << "Doc gia " << idTiepTheo << " da duoc muon sach (" << p->data.tenSach << ").\n";
         }
-    } else {                // neu hang doi trong
+    } else {
+        // neu hang doi trong
         p->data.soluong++;  // tra lai so luon sach khi tra
-        cout << "ID:" << id << " tra sach thanh cong ."
-             << "so luong sach hien co: " << p->data.soluong;
+        cout << "ID:" << id << " tra sach thanh cong .";
     }
 }
 // xoa doc gia theo id và tra lai sach
