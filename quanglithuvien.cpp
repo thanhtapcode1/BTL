@@ -1,34 +1,35 @@
 #include <iomanip>
 #include <iostream>
-#include <vector>
 using namespace std;
 
 class listSach;
+class listDg;
 //====================cai dac hang doi ====================
 struct NodeHD {
     int data;
-    NodeHD *next;
+    NodeHD* next;
 };
 
 class queue {
    public:
-    NodeHD *head;
+    NodeHD* head;
     int size;
     queue();
-    NodeHD *createNode(int x);
+    NodeHD* createNode(int x);
     void enqueue(int x);
     void dequeue();
     void inHD();
     int front();
     bool empty();
 };
+//---------------------khai trien hang doi-----------------
 queue::queue() {
     head = NULL;
     size = 0;
 }
 // tao node moi
-NodeHD *queue::createNode(int x) {
-    NodeHD *tmp = new NodeHD();
+NodeHD* queue::createNode(int x) {
+    NodeHD* tmp = new NodeHD();
     tmp->data = x;
     tmp->next = NULL;
     return tmp;
@@ -42,11 +43,11 @@ int queue::front() {
 bool queue::empty() { return head == NULL; }
 // them cuoi
 void queue::enqueue(int x) {
-    NodeHD *p = createNode(x);
+    NodeHD* p = createNode(x);
     if (head == NULL) {
         head = p;
     } else {
-        NodeHD *a = head;
+        NodeHD* a = head;
         while (a->next != NULL) {
             a = a->next;
         }
@@ -59,29 +60,90 @@ void queue::dequeue() {
     if (head == NULL) {
         return;
     } else {
-        NodeHD *p = head;
+        NodeHD* p = head;
         head = head->next;
         delete p;
     }
 }
 // in
 void queue::inHD() {
-    NodeHD *p = head;
+    NodeHD* p = head;
     while (p != NULL) {
         cout << p->data << " ";
         p = p->next;
     }
 }
-
-//==========================cau truc========================
-struct docgia {  // cau truc quan li doc gia
-    string ten;
-    string gioitinh;
-    int tuoi;
-    int id;
-    vector<string> sachdamuon;  // luu lai sach ma doc gia muon
+//=======================DANH SACH MUON===================================
+struct NodeMuon {  // cau truc muon tra sach
+    string maSach;
+    NodeMuon* next;
 };
-
+class muon {
+   public:
+    NodeMuon* head;
+    muon();
+    NodeMuon* createNode(string ma);
+    void themSach(string ma);
+    void xoaSach(string ma);
+    bool isEmpty();
+    void inDs();
+};
+//---------------trien khai muom------------------------------------------
+muon::muon() { head = NULL; };
+NodeMuon* muon::createNode(string ma) {
+    NodeMuon* p = new NodeMuon();
+    p->maSach = ma;
+    p->next = NULL;
+    return p;
+}
+void muon::themSach(string ma) {  // tự thêm vào cuối
+    NodeMuon* p = createNode(ma);
+    if (head == NULL) {
+        head = p;
+    } else {
+        NodeMuon* a = head;
+        while (a->next != NULL) {
+            a = a->next;
+        }
+        a->next = p;
+    }
+}
+void muon::xoaSach(string ma) {
+    if (head == NULL) {
+        return;
+    }
+    if (head->maSach == ma) {  // sach can xoa o dau linked list
+        NodeMuon* p = head;
+        head = head->next;
+        delete p;
+        return;
+    }
+    NodeMuon* p = head;
+    // duyệt đến node trước node cần xóa
+    while (p->next != NULL && p->next->maSach != ma) {
+        p = p->next;
+    }
+    // nếu ko tìm tháy mã sách
+    if (p->next == NULL) {
+        return;
+    }
+    NodeMuon* tmp = p->next;
+    p->next = tmp->next;
+    delete tmp;
+}
+bool muon::isEmpty() { return head == NULL; }
+void muon ::inDs() {
+    if (head == NULL)
+        cout << "Danh sach rong";
+    else {
+        NodeMuon* p = head;
+        while (p != NULL) {
+            cout << "- " << p->maSach << endl;
+            p = p->next;
+        }
+    }
+}
+//===================CAU TRUC SACH VA LIST SACH==================
 struct sach {  // cau truc quan li sach
     string masach;
     string tenSach;
@@ -89,86 +151,85 @@ struct sach {  // cau truc quan li sach
     int soluong;
     queue hangdoimuonsach;
 };
-struct NodeMuon {  // cau truc muon tra sach
-    string masach;
-    NodeMuon *next;
+struct NodeSach {
+    sach data;
+    NodeSach* next;
 };
-//=======================Class Muon sach==========================
-class muon {
-    NodeMuon *head;
-    muon();
+class list;
+class listSach {
+   private:
+    NodeSach* head;
+    NodeSach* tail;
 
-    NodeMuon *createNode(string ma);
-    void themSach(string ma);
-    void xoaSach(string ma);
-    bool isEmpty();
+   public:
+    listSach();
+    NodeSach* createNode(sach x);
     void inDs();
+    void insertLast(sach x);
+    void insertFirst(sach x);
+    void insertMid(sach x, int vitri);
+    int soPhantu();
+    void xoasachbangma(string masach);
+    void xoasachbangten(string ten);
+    NodeSach* timSachTheoMa(string ma);
+    void muonSach(string ma, int id, list& dg);
+    void traSach(string ma, int id, list& dg);
+    bool tonTaiSach(string& ma);
+    bool tonTaiSachTheoTen(string ten);
+    void inDanhSachHangDoi(list& dg);
 };
-muon::muon() { head = NULL; };
-NodeMuon *muon::createNode(string ma) {
-    NodeMuon *p = new NodeMuon();
-    p->masach = ma;
-    p->next = NULL;
-    return p;
-}
-void muon::themSach(string ma) {
-    NodeMuon *p = createNode(ma);
-    if (head == NULL) {
-        head = p;
-    } else {
-        NodeMuon *a = head;
-        while (a->next != NULL) {
-            a = a->next;
-        }
-        a->next = p;
-    }
-}
-
-//=======================class danh sach doc gia=================
+//=======================CAU TRUC DOC GIA VA LIST DOC GIA=========================
+struct docgia {  // cau truc quan li doc gia
+    string ten;
+    string gioitinh;
+    int tuoi;
+    int id;
+    muon sachdamuon;  // luu lai sach ma doc gia muon
+};
 struct NodeDg {
     docgia data;
-    NodeDg *next;
+    NodeDg* next;
 };
 
 class list {
    private:
-    NodeDg *head;
-    NodeDg *tail;
+    NodeDg* head;
+    NodeDg* tail;
 
    public:
     list();
-    NodeDg *createNode(docgia x);
+    NodeDg* createNode(docgia x);
     void inDs();
     void insertLast(docgia x);
     void insertFirst(docgia x);
     void insertMid(docgia x, int vitri);
     int soPhantu();
-    void xoaDocGiaTheoID(int id, listSach &ds);
-    NodeDg *timDocGiaTheoID(int id);
+    void xoaDocGiaTheoID(int id, listSach& ds);
+    NodeDg* timDocGiaTheoID(int id);
     void xemSachDangMuon(int id);
     bool tonTaiDocGia(int id);
-    void inTatCaSachDaMuon();
+    void inTatCaSachDaMuon(listSach& dsSach);
 };
 list::list() {
     head = NULL;
     tail = NULL;
 }
 bool list::tonTaiDocGia(int id) {
-    NodeDg *p = head;
+    NodeDg* p = head;
     while (p != NULL) {
         if (p->data.id == id) return true;
         p = p->next;
     }
     return false;
 }
-NodeDg *list::createNode(docgia x) {
-    NodeDg *p = new NodeDg();
+NodeDg* list::createNode(docgia x) {
+    NodeDg* p = new NodeDg();
     p->data = x;
     p->next = NULL;
     return p;
 }
 void list::insertLast(docgia x) {
-    NodeDg *p = createNode(x);
+    NodeDg* p = createNode(x);
     if (head == NULL) {
         head = tail = p;
         return;
@@ -178,7 +239,7 @@ void list::insertLast(docgia x) {
     }
 }
 int list::soPhantu() {
-    NodeDg *p = head;
+    NodeDg* p = head;
     int size = 0;
     while (p != NULL) {
         size++;
@@ -196,7 +257,7 @@ void list::inDs() {
     cout << "| " << left << setw(4) << "TUOI";
     cout << "| " << left << setw(10) << "GIOI TINH" << setw(3) << " |";
     cout << "\n-----------------------------------------------\n";
-    for (NodeDg *p = head; p != NULL; p = p->next) {
+    for (NodeDg* p = head; p != NULL; p = p->next) {
         cout << "| " << left << setw(6) << p->data.id;
         cout << "| " << left << setw(17) << p->data.ten;
         cout << "| " << left << setw(4) << p->data.tuoi;
@@ -204,8 +265,8 @@ void list::inDs() {
         cout << endl;
     }
 }
-NodeDg *list::timDocGiaTheoID(int id) {
-    NodeDg *p = head;
+NodeDg* list::timDocGiaTheoID(int id) {
+    NodeDg* p = head;
     while (p != NULL) {
         if (p->data.id == id) {
             return p;
@@ -215,7 +276,7 @@ NodeDg *list::timDocGiaTheoID(int id) {
     return NULL;
 }
 void list::insertFirst(docgia x) {
-    NodeDg *p = createNode(x);
+    NodeDg* p = createNode(x);
     if (head == NULL) {
         head = tail = p;
     } else {
@@ -235,8 +296,8 @@ void list::insertMid(docgia x, int vitri) {
         cout << "Vi tri khong hop le.";
         return;
     }
-    NodeDg *p = createNode(x);
-    NodeDg *tmp = head;
+    NodeDg* p = createNode(x);
+    NodeDg* tmp = head;
     for (int i = 1; i < vitri - 1; i++) {
         tmp = tmp->next;
     }
@@ -245,80 +306,57 @@ void list::insertMid(docgia x, int vitri) {
 }
 // xem sach doc gia dang muon
 void list::xemSachDangMuon(int id) {
-    NodeDg *p = timDocGiaTheoID(id);
+    NodeDg* p = timDocGiaTheoID(id);
     if (p == NULL) {
         cout << "Khong tim thay doc gia co ID " << id << endl;
         return;
     }
     cout << "Doc gia ten : " << p->data.ten << " (ID " << p->data.id << " )" << "dang muon :\n";
-    if (p->data.sachdamuon.empty()) {
+    if (p->data.sachdamuon.isEmpty()) {
         cout << "khong co sach ";
     } else {
-        for (auto &ma : p->data.sachdamuon) {
-            cout << "-" << ma << endl;
-        }
+        p->data.sachdamuon.inDs();
     }
 }
-void list::inTatCaSachDaMuon() {
+void list::inTatCaSachDaMuon(listSach& dsSach) {
     if (head == NULL) {
         cout << "Danh sach doc gia rong.\n";
         return;
     }
-    NodeDg *p = head;
+    NodeDg* p = head;
     cout << "\n========== Danh sach da muon  ==========\n";
     while (p != NULL) {
         cout << "Độc giả: " << p->data.ten << " (ID: " << p->data.id << ")\n";
-        if (p->data.sachdamuon.empty()) {
+        if (p->data.sachdamuon.isEmpty()) {
             cout << "   - Không có sách nào đang mượn.\n";
         } else {
-            for (const auto &maSach : p->data.sachdamuon) {
-                cout << "   - Mã sách: " << maSach << endl;
+            NodeMuon* muon = p->data.sachdamuon.head;
+            while (muon != NULL) {
+                NodeSach* sachDocGiaDaMuon = dsSach.timSachTheoMa(muon->maSach);
+                if (sachDocGiaDaMuon != NULL) {
+                    cout << " -Ma : " << muon->maSach;
+                    cout << "- Ten sach : " << sachDocGiaDaMuon->data.tenSach << endl;
+                }
+                muon = muon->next;
             }
         }
         cout << "-----------------------------------------------------------\n";
         p = p->next;
     }
 }
-//========================Quan li  sach============================
-struct NodeSach {
-    sach data;
-    NodeSach *next;
-};
 
-class listSach {
-   private:
-    NodeSach *head;
-    NodeSach *tail;
-
-   public:
-    listSach();
-    NodeSach *createNode(sach x);
-    void inDs();
-    void insertLast(sach x);
-    void insertFirst(sach x);
-    void insertMid(sach x, int vitri);
-    int soPhantu();
-    void xoasachbangma(string masach);
-    void xoasachbangten(string ten);
-    NodeSach *timSachTheoMa(string ma);
-    void muonSach(string ma, int id, list &dg);
-    void traSach(string ma, int id, list &dg);
-    bool tonTaiSach(string &ma);
-    bool tonTaiSachTheoTen(string ten);
-    void inDanhSachHangDoi(list &dg);
-};
 listSach::listSach() {
     head = NULL;
     tail = NULL;
 }
-NodeSach *listSach::createNode(sach x) {
-    NodeSach *p = new NodeSach();
+NodeSach* listSach::createNode(sach x) {
+    NodeSach* p = new NodeSach();
     p->data = x;
     p->next = NULL;
     return p;
 }
 void listSach::insertLast(sach x) {
-    NodeSach *p = createNode(x);
+    NodeSach* p = createNode(x);
     if (head == NULL) {
         head = tail = p;
         return;
@@ -328,7 +366,7 @@ void listSach::insertLast(sach x) {
     }
 }
 int listSach::soPhantu() {
-    NodeSach *p = head;
+    NodeSach* p = head;
     int size = 0;
     while (p != NULL) {
         size++;
@@ -346,7 +384,7 @@ void listSach::inDs() {
     cout << "| " << left << setw(20) << "TAC GIA";
     cout << "| " << left << setw(7) << "SO LUONG" << setw(3) << " |";
     cout << "\n-------------------------------------------------------------------------\n";
-    for (NodeSach *p = head; p != NULL; p = p->next) {
+    for (NodeSach* p = head; p != NULL; p = p->next) {
         cout << "| " << left << setw(10) << p->data.masach;
         cout << "| " << left << setw(25) << p->data.tenSach;
         cout << "| " << left << setw(20) << p->data.tacGia;
@@ -355,7 +393,7 @@ void listSach::inDs() {
     }
 }
 void listSach::insertFirst(sach x) {
-    NodeSach *p = createNode(x);
+    NodeSach* p = createNode(x);
     if (head == NULL) {
         head = tail = p;
     } else {
@@ -375,8 +413,8 @@ void listSach::insertMid(sach x, int vitri) {
         cout << "Vi tri khong hop le.";
         return;
     }
-    NodeSach *p = createNode(x);
-    NodeSach *tmp = head;
+    NodeSach* p = createNode(x);
+    NodeSach* tmp = head;
     for (int i = 1; i < vitri - 1; i++) {
         tmp = tmp->next;
     }
@@ -388,13 +426,13 @@ void listSach::xoasachbangma(string masach) {
         cout << "Danh sach rong, khong the xoa.\n";
         return;
     } else if (head->data.masach == masach) {
-        NodeSach *c = head;
+        NodeSach* c = head;
         head = head->next;
         delete c;
         cout << "Da xoa sach co ma " << masach << ".\n";
         return;
     }
-    NodeSach *p = head;
+    NodeSach* p = head;
     while (p->next != NULL && p->next->data.masach != masach) {
         p = p->next;
     }
@@ -402,7 +440,7 @@ void listSach::xoasachbangma(string masach) {
         cout << "Khong tim thay sach co ma " << masach << ".\n";
         return;
     }
-    NodeSach *c = p->next;
+    NodeSach* c = p->next;
     p->next = c->next;
     delete c;
     cout << "Da xoa ma sach " << masach << ".\n";
@@ -412,13 +450,13 @@ void listSach::xoasachbangten(string tenSach) {
         cout << "Danh sach rong, khong the xoa.\n";
         return;
     } else if (head->data.tenSach == tenSach) {
-        NodeSach *c = head;
+        NodeSach* c = head;
         head = head->next;
         delete c;
         cout << "Da xoa sach co ten " << tenSach << ".\n";
         return;
     }
-    NodeSach *p = head;
+    NodeSach* p = head;
     while (p->next != NULL && p->next->data.tenSach != tenSach) {
         p = p->next;
     }
@@ -426,21 +464,21 @@ void listSach::xoasachbangten(string tenSach) {
         cout << "Khong tim thay sach co ten " << tenSach << ".\n";
         return;
     }
-    NodeSach *c = p->next;
+    NodeSach* c = p->next;
     p->next = c->next;
     delete c;
     cout << "Da xoa ma sach " << tenSach << ".\n";
 }
-NodeSach *listSach::timSachTheoMa(string ma) {
-    NodeSach *p = head;
+NodeSach* listSach::timSachTheoMa(string ma) {
+    NodeSach* p = head;
     while (p != NULL) {
         if (p->data.masach == ma) return p;
         p = p->next;
     }
     return NULL;
 }
-bool listSach::tonTaiSach(string &ma) {  // ton tai sach theo ma
-    NodeSach *p = head;
+bool listSach::tonTaiSach(string& ma) {  // ton tai sach theo ma
+    NodeSach* p = head;
     while (p != NULL) {
         if (p->data.masach == ma) return true;
         p = p->next;
@@ -448,7 +486,7 @@ bool listSach::tonTaiSach(string &ma) {  // ton tai sach theo ma
     return false;
 }
 bool listSach::tonTaiSachTheoTen(string ten) {
-    NodeSach *p = head;
+    NodeSach* p = head;
     while (p != NULL) {
         if (p->data.tenSach == ten) return true;
         p = p->next;
@@ -456,17 +494,17 @@ bool listSach::tonTaiSachTheoTen(string ten) {
     return false;
 }
 // muon sach
-void listSach::muonSach(string ma, int id, list &dg) {
-    NodeSach *p = timSachTheoMa(ma);
+void listSach::muonSach(string ma, int id, list& dg) {
+    NodeSach* p = timSachTheoMa(ma);
     if (p == NULL) {
         cout << "Khong tim thay sach";
         return;
     }
     if (p->data.soluong > 0) {
         p->data.soluong--;
-        NodeDg *a = dg.timDocGiaTheoID(id);
+        NodeDg* a = dg.timDocGiaTheoID(id);
         if (a) {
-            a->data.sachdamuon.push_back(ma);
+            a->data.sachdamuon.themSach(ma);
             cout << "Doc gia " << id << " ten " << a->data.ten << " da muon sach " << p->data.masach
                  << ":" << p->data.tenSach << "." << endl;
         }
@@ -476,29 +514,23 @@ void listSach::muonSach(string ma, int id, list &dg) {
         cout << "Da het sach . Doc gia " << id << " duoc dua vao hang doi.\n";
     }
 }
-void listSach::traSach(string ma, int id, list &dg) {
-    NodeSach *p = timSachTheoMa(ma);
+void listSach::traSach(string ma, int id, list& dg) {
+    NodeSach* p = timSachTheoMa(ma);
     if (p == NULL) {
         cout << "Khong tim thay sach .";
         return;
     }
     // xoa sach khoi danh sach muon
-    NodeDg *a = dg.timDocGiaTheoID(id);
-    if (a) {                           // neu ton tai doc gia
-        auto &v = a->data.sachdamuon;  // goi v la vector chứa các sach da muon cua doc gia
-        for (auto i = v.begin(); i != v.end(); i++) {
-            if (*i == ma) {
-                v.erase(i);  // xoa di ma sach
-                break;
-            }
-        }
+    NodeDg* a = dg.timDocGiaTheoID(id);
+    if (a) {  // neu ton tai doc gia
+        a->data.sachdamuon.xoaSach(ma);
     }
     if (!p->data.hangdoimuonsach.empty()) {  // kiem tra neu co doc gia trong hang doi
         int idTiepTheo = p->data.hangdoimuonsach.front();
         p->data.hangdoimuonsach.dequeue();  // xoa khoi hang doi
-        NodeDg *dg2 = dg.timDocGiaTheoID(idTiepTheo);
+        NodeDg* dg2 = dg.timDocGiaTheoID(idTiepTheo);
         if (dg2) {
-            dg2->data.sachdamuon.push_back(ma);  // them sach da muon vao doc gia co IdTieptheo
+            dg2->data.sachdamuon.themSach(ma);  // them sach da muon vao doc gia co IdTieptheo
             cout << "Doc gia " << idTiepTheo << " da duoc muon sach (" << p->data.tenSach << ").\n";
         }
     } else {                // neu hang doi trong
@@ -508,14 +540,14 @@ void listSach::traSach(string ma, int id, list &dg) {
     }
 }
 // xoa doc gia theo id và tra lai sach
-void list::xoaDocGiaTheoID(int id, listSach &ds) {
+void list::xoaDocGiaTheoID(int id, listSach& ds) {
     if (head == NULL) {
         cout << "Danh sach rong, khong the xoa.\n";
         return;
     }
-    NodeDg *truoc = NULL;
-    NodeDg *sau = head;
-
+    NodeDg* truoc = NULL;
+    NodeDg* sau = head;
+    // tìm độc giả cần xóa
     while (sau != NULL && sau->data.id != id) {
         truoc = sau;
         sau = sau->next;
@@ -524,29 +556,29 @@ void list::xoaDocGiaTheoID(int id, listSach &ds) {
         cout << "Khong tim thay doc gia co ID " << id << ".\n";
         return;
     }
-    // copy lai danh sach sách da muon để khi duyệt vector ko bị xóa mất phầntửkhidangduyệt
-    auto temp = sau->data.sachdamuon;
-    for (const auto &maSach : temp) {
-        ds.traSach(maSach, id, *this);
+    // Duyệt toàn bộ danh sách sách đã mượn, trả từng quyển
+    NodeMuon* p = sau->data.sachdamuon.head;
+    while (p != NULL) {
+        NodeMuon* next = p->next;  // lưu lại node kế tiếp trước khi gọi traSach
+        ds.traSach(p->maSach, id, *this);
+        p = next;
     }
-    sau->data.sachdamuon.clear();
-    // Xóa node độc giả
+    // Xóa node độc giả khỏi danh sách
     if (truoc == NULL)
         head = head->next;
     else
         truoc->next = sau->next;
     delete sau;
-
     cout << "Da xoa doc gia co ID " << id << " va tra lai toan bo sach.\n";
 }
-void listSach::inDanhSachHangDoi(list &dg) {
+void listSach::inDanhSachHangDoi(list& dg) {
     if (head == NULL) {
         cout << "Danh sach rong";
         return;
     }
 }
 //=======================nhap thong tin doc gia=================
-void nhapDocGia(docgia &a) {
+void nhapDocGia(docgia& a) {
     cout << "Nhap ID:";
     cin >> a.id;
     cout << "Nhap ten doc gia :";
@@ -560,7 +592,7 @@ void nhapDocGia(docgia &a) {
 }
 
 // ================nhap thong tin Sach================
-void nhapSach(sach &a) {
+void nhapSach(sach& a) {
     cout << "Nhap ma sach :";
     cin.ignore();
     getline(cin, a.masach);
@@ -683,7 +715,7 @@ int main() {
             cout << "Nhap ma sach can tim: ";
             cin.ignore();
             getline(cin, ma);
-            NodeSach *p = DSsach.timSachTheoMa(ma);
+            NodeSach* p = DSsach.timSachTheoMa(ma);
             if (p != NULL) {
                 cout << "Tim thay sach: " << p->data.tenSach << " | Tac gia: " << p->data.tacGia
                      << " | SL: " << p->data.soluong << endl;
@@ -746,7 +778,7 @@ int main() {
                 DSsach.inDs();
             }
             if (lc4 == 3) {
-                Dsdocgia.inTatCaSachDaMuon();
+                Dsdocgia.inTatCaSachDaMuon(DSsach);
             }
         }
     }
