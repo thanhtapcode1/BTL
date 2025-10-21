@@ -700,7 +700,7 @@ int main() {
         cout << "|                                                   |\n";
         cout << "|          4. TIM SACH ( Ma / Ten )                 |\n";
         cout << "|                                                   |\n";
-        cout << "|          5.THEM SO LUONG SACH                     |\n";
+        cout << "|          5. THEM SO LUONG SACH                    |\n";
         cout << "|                                                   |\n";
         cout << "|          6. MUON / TRA SACH                       |\n";
         cout << "|                                                   |\n";
