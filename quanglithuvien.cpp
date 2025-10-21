@@ -541,7 +541,7 @@ NodeSach* listSach::timSachTheoMa(string ma) {
 NodeSach* listSach::timSachTheoTen(string ten) {
     NodeSach* p = head;
     while (p != NULL) {
-        if (p->data.masach == ten) return p;
+        if (p->data.tenSach == ten) return p;
         p = p->next;
     }
     return NULL;
@@ -835,7 +835,7 @@ int main() {
                 getline(cin, ma);
                 NodeSach* p = DSsach.timSachTheoMa(ma);
                 if (p != NULL) {
-                    cout << "Tim thay sach: " << p->data.tenSach << " | Tac gia: " << p->data.tacGia
+                    cout << "Tim thay sach: " << p->data.masach << " | Tac gia: " << p->data.tacGia
                          << " | SL: " << p->data.soluong << endl;
                 } else {
                     cout << "Khong tim thay sach.";
@@ -846,7 +846,7 @@ int main() {
                 cout << "Nhap ten sach can tim: ";
                 cin.ignore();
                 getline(cin, tenSach);
-                NodeSach* p = DSsach.timSachTheoMa(tenSach);
+                NodeSach* p = DSsach.timSachTheoTen(tenSach);
                 if (p != NULL) {
                     cout << "Tim thay sach: " << p->data.tenSach << " | Tac gia: " << p->data.tacGia
                          << " | SL: " << p->data.soluong << endl;
