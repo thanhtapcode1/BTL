@@ -647,7 +647,6 @@ void nhapDocGia(docgia& a) {
 // ================nhap thong tin Sach================
 void nhapSach(sach& a) {
     cout << "Nhap ma sach :";
-    cin.ignore();
     getline(cin, a.masach);
     cout << "Nhap ten sach :";
     getline(cin, a.tenSach);
@@ -753,6 +752,7 @@ int main() {
                 int lcThem;
                 cin >> lcThem;
                 sach a;
+                cin.ignore();
                 nhapSach(a);
                 if (lcThem == 1) {
                     DSsach.insertFirst(a);
